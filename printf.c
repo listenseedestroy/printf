@@ -1,63 +1,42 @@
-#include <stdio.h>
-#include <stdarg.h>
 #include "main.h"
+/**
+ * _printf - is a function that selects the correct function to print.
+ * @format: identifier to look for.
+ * Return: the length of the string.
+ */
+int _printf(const char * const format, ...)
+{
+	convert p[] = {
+		{"%s", printf_s}, {"%c", printf_c},
+		{"%%", print_37},
+		{"%i", print_i}, {"%d", print_d},
+        
+};
+	va_list args;
+	int i = 0, j, length = 0;
 
-int _printf(const char *format, ...) {
-    int count = 0;
-    int* arg = (int*)&format + 1;
+	va_start(args, format);
+	if (format == "NULL" || (format[0] == '%' && format[1] == '\0'))
+		return (-1);
 
-    while (*format) {
-        if (*format == '%') {
-            format++;
-
-            // Handle conversion specifiers
-            switch (*format) {
-                case 'c':
-                    putchar((char)(*arg));
-                    count++;
-                    break;
-                case 's':
-                    {
-                        const char *str = (const char*)(*arg);
-                        while (*str) {
-                            putchar(*str);
-                            count++;
-                            str++;
-                        }
-                    }
-                    break;
-                case 'd':
-                case 'i':
-                    {
-                        int num = *arg;
-                        printf("%d", num);
-                        count++;
-                    }
-                    break;
-                case '%':
-                    putchar('%');
-                    count++;
-                    break;
-                default:
-                    // Unsupported specifier, just print it as is
-                    putchar('%');
-                    putchar(*format);
-                    count += 2;
-            }
-            arg++; // Move to the next argument
-        } else {
-            putchar(*format);
-            count++;
-        }
-
-        format++;
-    }
-
-    return count;
-}
-
-int main() {
-    _printf("Hello, %s! The answer is %d%%. Character: %c\n", "User", 69, 'H');
-    _printf("This is a number: %d\n", 43564);
-    return 0;
+Here:
+	while (format[i] != '\0')
+	{
+		j = 13;
+		while (j >= 0)
+		{
+			if (p[j].ph[0] == format[i] && p[j].ph[1] == format[i + 1])
+			{
+				length += p[j].function(args);
+				i = i + 2;
+				goto Here;
+			}
+			j--;
+		}
+		_putchar(format[i]);
+		length++;
+		i++;
+	}
+	va_end(args);
+	return (length);
 }
